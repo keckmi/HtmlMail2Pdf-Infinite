@@ -1,0 +1,12 @@
+{
+  "name": "html2pdf-infinite",
+  "version": "1.0.0",
+  "description": "Convert any HTML into an infinite-height, screen-accurate PDF",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "playwright": "^1.45.0"
+  }
+}
