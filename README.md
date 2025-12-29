@@ -12,6 +12,7 @@ To Convert the .html Mails i'm downloading from my overflowing mailbox into infi
 Before using the project, install the required packages and browsers:
 
 npm install playwright
+npm install cheerio
 npx playwright install
 
 ## SendTo Helper Script

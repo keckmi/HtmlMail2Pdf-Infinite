@@ -1,8 +1,10 @@
 //npm install playwright
+//npm install cheerio //for mailMeta.js
 //npx playwright install 
 const { chromium } = require("playwright");
 const fs = require("fs");
 const path = require("path");
+const { extractMailMeta } = require("./mailMeta");
 
 async function run() {
     if (process.argv.length < 3) {
@@ -16,17 +18,23 @@ async function run() {
         process.exit(1);
     }
 
-    const absInput = path.resolve(input);
-    const output = absInput.replace(/\.html?$/i, "") + ".pdf";
+    // ⬇️ READ HTML and extract metadata via mailMeta.js
+    const html = fs.readFileSync(input, "utf8");
+    const { sender, formattedDate } = extractMailMeta(html);
 
-    const browser = await chromium.launch({ headless: true });
+    const dir = path.dirname(input);
+    const baseName = path.basename(input, ".html");
+
+    // ⬇️ BUILD NEW FILENAME
+    const newBaseName = `${formattedDate}_${sender}_${baseName}`;
+    const output = path.join(dir, newBaseName + ".pdf");
+
+    const browser = await chromium.launch();
     const page = await browser.newPage();
 
-    // Load HTML
-    await page.goto("file://" + absInput, { waitUntil: "networkidle" });
-
-    // Force screen media
-    await page.emulateMedia({ media: "screen" });
+    await page.goto("file://" + path.resolve(input), {
+        waitUntil: "networkidle",
+    });
 
     // Get full page height
     const bodyHandle = await page.$("body");
