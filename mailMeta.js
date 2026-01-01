@@ -24,17 +24,32 @@ function extractMailMeta(html) {
   });
 
   return {
-    sender: extractSenderName(senderText),
+    sender: normalizeSender(senderText),
     formattedDate: formatDate(dateText),
   };
 }
 
 /**
- * '"Amazon.de" <mail@amazon.de>' → 'Amazon.de'
+ * Supports:
+ *  - "Amazon.de" <mail@amazon.de>
+ *  - kundenservice@example.de
  */
-function extractSenderName(senderText) {
-  const match = senderText.match(/"([^"]+)"/);
-  return match ? match[1].trim() : "UnknownSender";
+function normalizeSender(text) {
+  if (!text) return "UnknownSender";
+
+  // OLD form: "Name" <email>
+  const namedMatch = text.match(/"?([^"<]+)"?\s*<[^>]+>/);
+  if (namedMatch) {
+    return sanitize(namedMatch[1]);
+  }
+
+  // NEW form: plain email
+  const emailMatch = text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);
+  if (emailMatch) {
+    return sanitize(emailMatch[0]);
+  }
+
+  return sanitize(text);
 }
 
 /**
@@ -46,6 +61,15 @@ function formatDate(dateText) {
 
   const [, day, month, year] = match;
   return `${year}.${month}.${day}`;
+}
+
+
+function sanitize(text) {
+  return text
+    .replace(/@/g, "(at)")
+    .replace(/[<>"]/g, "")
+    .replace(/\s+/g, "_")
+    .replace(/[^\w().-]/g, "");
 }
 
 module.exports = { extractMailMeta };
