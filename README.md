@@ -2,7 +2,8 @@
 
 To Convert the .html Mails i'm downloading from my overflowing mailbox into infinitely long pdfs without page break fails in the layout.
 
-This project is no longer actively maintained. A newer successor project is available here: https://github.com/keckmi/emltohtml
+This project is no longer actively maintained.  
+A newer successor project is available here: https://github.com/keckmi/emltohtml
 
 ## Prerequisites
 
