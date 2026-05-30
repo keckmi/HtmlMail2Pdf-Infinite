@@ -2,6 +2,8 @@
 
 To Convert the .html Mails i'm downloading from my overflowing mailbox into infinitely long pdfs without page break fails in the layout.
 
+This project has been superseded by emlToHtml: https://github.com/keckmi/emltohtml
+
 ## Prerequisites
 
 - Node.js (v14+ recommended)
